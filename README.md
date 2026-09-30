@@ -1,110 +1,223 @@
-This guide provides an overview of the codebase, the functionality of the app, and detailed instructions on how to set up and run the app. Make sure to follow all steps carefully, especially regarding Node.js version requirements.
+# Todo App
 
-Overview
-This is an authentication-protected Todo App using Node.js, Express.js, bcrypt, JWT authentication, and SQLite. The app allows users to:
+A secure, full-stack Todo application built with Node.js, Express, JWT authentication, bcrypt, and SQLite.
 
-Register: Create a new account.
-Login: Authenticate and receive a JWT token.
-Manage Todos: Perform auth protected CRUD operations on their own todo tasks after logging in.
-Project Structure
-Here’s the corrected and complete project structure diagram for the auth-protected Todo App:
+This project allows users to register, log in, and manage their own todo items behind protected routes.
 
+## Overview
+
+The app includes:
+
+- User registration
+- Login with JWT authentication
+- Protected todo CRUD operations
+- SQLite persistence
+- A simple frontend served from `public/index.html`
+
+## Features
+
+- Create a new account
+- Sign in securely with a username/password
+- Receive and store a JWT token
+- Create, read, update, and delete todos
+- Restrict todo access to the authenticated user only
+
+## Project Structure
+
+```text
 backend-todo-app/
-│
 ├── public/
-│   └── index.html              # The frontend HTML file for authentication and todo management
-│
+│   └── index.html               # Frontend UI for authentication and todo management
 ├── src/
-│   ├── controllers/            # (Optional) For future separation of concerns
-│   └── middlewares/
-│       └── authMiddleware.js    # Middleware for verifying JWT and protecting routes
+│   ├── db.js                    # SQLite database setup and table creation
+│   ├── server.js                # Express app setup and route registration
+│   ├── middlewares/
+│   │   └── authMiddleware.js    # Verifies JWT and protects routes
 │   └── routes/
-│       └── authRoutes.js        # Routes for user registration and login
-│       └── todoRoutes.js        # Routes for authenticated CRUD operations on todos
-│   └── db.js                    # SQLite database setup and table creation
-│   └── server.js                # Main server entry point that sets up routing and middleware
-│
-├── .env                         # Environment variables for the project
-├── package.json                 # Project dependencies and scripts
-├── package-lock.json            # Lockfile for exact dependency versions
-└── todo-app.rest                # REST client file for emulating API requests
-This complete structure reflects all important directories and files, allowing for easy navigation of the project.
+│       ├── authRoutes.js        # Registration and login routes
+│       └── todoRoutes.js        # Authenticated CRUD routes for todos
+├── .env                         # Environment variables
+├── package.json                 # Dependencies and scripts
+├── package-lock.json            # Lockfile
+├── todo-app.rest                # REST client requests for testing the API
+└── README.md                    # Project documentation
+```
 
-Key Directories and Files
-public/index.html: Frontend HTML for authentication and todo management.
-src/middlewares/authMiddleware.js: Middleware to protect routes using JWT.
-src/routes/authRoutes.js: Handles user registration and login.
-src/routes/todoRoutes.js: Handles CRUD operations for todos, protected by authentication.
-src/db.js: Initializes SQLite database and creates tables.
-src/server.js: Sets up the Express server, middleware, and routing.
-todo-app.rest: REST client file for emulating HTTP requests (registration, login, CRUD).
-Node.js Version and Flags
-The app requires Node.js version 22 or higher and uses experimental features. If you're using a lower version, you will need to upgrade.
+## Requirements
 
-Checking and Modifying Node.js Version
-To check your current Node.js version:
+- Node.js 22 or higher
+- npm
+- SQLite support via Node's experimental SQLite mode
 
-node -v
-To install or switch Node versions, use nvm (Node Version Manager). If you don’t have nvm installed, follow the instructions here.
+## Getting Started
 
-nvm install 22
-nvm use 22
-Once the appropriate version is installed, start the app with the following flags:
+### 1) Clone the repository
 
-node --env-file=.env --experimental-sqlite ./src/server.js
-Changing the Localhost Port to 3000
-By default, the app runs on port 5000. If you want to run it on localhost:3000, you can modify the .env file:
-
-Open .env and change the PORT variable to 3000:
-PORT=3000
-Restart the server using the updated environment configuration:
-npm start
-Now the app will be accessible at http://localhost:3000.
-
-Getting Started
-Clone the Repository:
+```bash
 git clone https://github.com/your-username/backend-todo-app.git
 cd backend-todo-app
-Install Dependencies:
-Install all the required packages:
+```
 
+### 2) Install dependencies
+
+```bash
 npm install express bcryptjs jsonwebtoken
-Install Developer Dependencies
 npm install --save-dev nodemon
-Update The package.json Description
-A Node.js To-do app with Express, Prisma, and JWT authentication.
-Update The package.json Scripts
- "scripts": {
-    "dev": "nodemon --env-file=.env --experimental-sqlite ./src/server.js",
-  },
-Set Up Environment Variables:
-In the .env file, define your environment variables:
+```
 
+### 3) Configure environment variables
+
+Create a `.env` file:
+
+```env
 JWT_SECRET=your_jwt_secret_here
-PORT=5000 # Or change to 3000 if preferred
-Run the Server:
-Ensure you are using Node.js v22 or higher with experimental flags:
+PORT=5000
+```
 
+If you want the app to run on port `3000`, set:
+
+```env
+PORT=3000
+```
+
+### 4) Start the app
+
+Use a compatible Node.js version and enable the experimental SQLite flag:
+
+```bash
+node --env-file=.env --experimental-sqlite ./src/server.js
+```
+
+Or run it in development mode with nodemon:
+
+```bash
 npm run dev
-Access the App:
-Open http://localhost:5000 (or localhost:3000 if changed) in your browser to see the frontend. You can register, log in, and manage your todo list from there.
+```
 
-Emulating HTTP Requests (REST Client)
-The REST Client file (todo-app.rest) is provided to help you test the API using HTTP requests directly. You can run these requests using the REST Client extension for VS Code or other compatible tools.
+Make sure your `package.json` includes a script like this:
 
-todo-app.rest
-The todo-app.rest file includes requests for:
+```json
+{
+  "scripts": {
+    "dev": "nodemon --env-file=.env --experimental-sqlite ./src/server.js"
+  }
+}
+```
 
-Registering a user: Sends a POST request to create a new user.
-Logging in: Sends a POST request to authenticate a user and retrieve a JWT token.
-Fetching todos: Sends a GET request to fetch the authenticated user's todos (JWT required).
-Adding a todo: Sends a POST request to create a new todo (JWT required).
-Updating a todo: Sends a PUT request to update an existing todo (JWT required).
-Deleting a todo: Sends a DELETE request to remove a todo (JWT required).
-How to Use the REST Client
-Install the REST Client extension for VS Code.
-Open todo-app.rest.
-Run the requests by clicking on the "Send Request" link above each block of HTTP code.
-Make sure to copy the token from the login response and replace {{token}} with the actual JWT token for protected routes.
-Conclusion
-This guide covers the main components of the app and how to get it up and running on your local machine. It highlights key considerations for Node.js version compatibility and provides a ready-to-use todo-app.rest file for testing. You can now explore the app's functionality, including authentication and CRUD operations on todos!
+## Access the App
+
+Open the app in your browser:
+
+- http://localhost:5000
+- or http://localhost:3000 if you changed the port
+
+You can register, log in, and manage your todo list from the frontend.
+
+## API Endpoints
+
+### Authentication routes
+
+#### Register user
+
+```http
+POST /api/auth/register
+```
+
+Request body:
+
+```json
+{
+  "username": "alice",
+  "password": "secret123"
+}
+```
+
+#### Login user
+
+```http
+POST /api/auth/login
+```
+
+Request body:
+
+```json
+{
+  "username": "alice",
+  "password": "secret123"
+}
+```
+
+This returns a JWT token for future requests.
+
+### Todo routes
+
+All todo routes require a valid JWT token in the `Authorization` header:
+
+```http
+Authorization: Bearer <token>
+```
+
+#### Get todos
+
+```http
+GET /api/todos
+```
+
+#### Create todo
+
+```http
+POST /api/todos
+```
+
+Request body:
+
+```json
+{
+  "title": "Finish project proposal",
+  "completed": false
+}
+```
+
+#### Update todo
+
+```http
+PUT /api/todos/:id
+```
+
+#### Delete todo
+
+```http
+DELETE /api/todos/:id
+```
+
+## Testing with the REST Client
+
+A `todo-app.rest` file is included to help test the API directly.
+
+### How to use it
+
+1. Install the REST Client extension for VS Code.
+2. Open `todo-app.rest`.
+3. Click `Send Request` above each request block.
+4. Copy the token from the login response and replace `{{token}}` with the actual JWT token.
+
+This file includes requests for:
+
+- Registering a user
+- Logging in
+- Fetching todos
+- Creating a todo
+- Updating a todo
+- Deleting a todo
+
+## Notes
+
+- The app requires Node.js v22+.
+- It uses `--experimental-sqlite` for SQLite support.
+- JWT tokens are required for all protected todo operations.
+
+## Conclusion
+
+This project demonstrates a simple, secure Todo application using Node.js, JWT authentication, and SQLite persistence.
+
+It is a strong starting point for building authenticated APIs and adding more features later.
